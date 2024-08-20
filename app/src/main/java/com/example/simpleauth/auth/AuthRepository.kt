@@ -2,8 +2,8 @@ package com.example.simpleauth.auth
 
 import com.example.simpleauth.model.HttpResponse
 import com.example.simpleauth.model.User
-import com.example.simpleauth.ui.screens.login.LoginForm
-import com.example.simpleauth.ui.screens.register.RegisterForm
+import com.example.simpleauth.ui.screens.auth.LoginForm
+import com.example.simpleauth.ui.screens.auth.RegisterForm
 
 interface AuthRepository {
 
@@ -11,6 +11,8 @@ interface AuthRepository {
 
     suspend fun login(loginForm: LoginForm) : AuthResult<HttpResponse>
 
-    suspend fun authenticate(token : String) : AuthResult<User>
+    suspend fun authenticate(token : String) : AuthResult<HttpResponse>
+
+    suspend fun logout(token : String) : AuthResult<HttpResponse>
 
 }

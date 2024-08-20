@@ -1,5 +1,6 @@
-package com.example.simpleauth.ui.screens.register
+package com.example.simpleauth.ui.screens.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,22 +18,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.simpleauth.auth.AuthResult
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun RegisterScreen(
-    viewModel : RegisterScreenViewModel,
+    viewModel : AuthScreenViewModel,
     modifier: Modifier = Modifier,
     onLogClick: () -> Unit
 ){
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
 
 
     Column(
@@ -43,8 +45,8 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.Center
     ) {
         RegBody(
-            itemUiState = viewModel.itemUiState,
-            onItemValueChange = viewModel::updateUiState,
+            itemUiState = viewModel.regItemUiState,
+            onItemValueChange = viewModel::updateRegUiState,
             onRegClick = {
                 coroutineScope.launch {
                     viewModel.register()
@@ -54,7 +56,7 @@ fun RegisterScreen(
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth(),
             onLogClick = onLogClick,
-            itemErrorUiState = viewModel.itemErrorUiState
+            itemErrorUiState = viewModel.regItemErrorUiState
         )
     }
 }
@@ -96,7 +98,7 @@ fun RegBody(
 
 
 @Composable
-fun RegForm(registerForm: RegisterForm,itemErrorUiState: RegErrorsItemUiState, enabled: Boolean = true, onValueChange: (RegisterForm) -> Unit = {}, modifier: Modifier = Modifier){
+fun RegForm(registerForm: RegisterForm, itemErrorUiState: RegErrorsItemUiState, enabled: Boolean = true, onValueChange: (RegisterForm) -> Unit = {}, modifier: Modifier = Modifier){
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)

@@ -3,10 +3,9 @@ package com.example.simpleauth.auth
 import android.util.Log
 import com.example.simpleauth.data.user.AuthPreferencesRepository
 import com.example.simpleauth.model.HttpResponse
-import com.example.simpleauth.model.User
 import com.example.simpleauth.service.AuthService
-import com.example.simpleauth.ui.screens.login.LoginForm
-import com.example.simpleauth.ui.screens.register.RegisterForm
+import com.example.simpleauth.ui.screens.auth.LoginForm
+import com.example.simpleauth.ui.screens.auth.RegisterForm
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -19,13 +18,11 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun register(registerForm: RegisterForm): AuthResult<HttpResponse> {
         return try{
             val result = authService.register(registerForm)
-            Log.v("REG_ATTEMPT",result.toString())
             login(LoginForm(email = registerForm.email, password = registerForm.password))
             AuthResult.Authorized(result)
         }catch (e: HttpException) {
             if (e.code() == 422) {
                 val responseBody = e.response()?.errorBody()?.string() ?: ""
-                Log.e("REG_ERROR", "Raw response body: $responseBody") // Log the raw response
                 val httpResponse = parseHttpResponse(responseBody)
                 AuthResult.Unauthorized(httpResponse)
             } else {
@@ -34,7 +31,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    fun parseHttpResponse(responseBody: String): HttpResponse {
+    private fun parseHttpResponse(responseBody: String): HttpResponse {
         return try {
             if (responseBody.isBlank()) {
                 Log.e("PARSE_ERROR", "Response body is blank or empty")
@@ -50,24 +47,46 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun login(loginForm: LoginForm): AuthResult<HttpResponse> {
-        val result = authService.login(loginForm)
-        Log.v("REG_ATTEMPT",result.toString())
-        result.data?.token?.let { prefs.saveJwtToken(it) }
-        result.data?.user?.name?.let { prefs.saveUserName(it) }
-        result.data?.user?.email?.let { prefs.saveUserEmail(it) }
-        return AuthResult.Authorized(result)
+        return try{
+            val result = authService.login(loginForm)
+            prefs.saveUser(result)
+            AuthResult.Authorized(result)
+        }catch (e: HttpException) {
+            if (e.code() == 422) {
+                val responseBody = e.response()?.errorBody()?.string() ?: ""
+                val httpResponse = parseHttpResponse(responseBody)
+                AuthResult.Unauthorized(httpResponse)
+            } else {
+                AuthResult.UnknownError(HttpResponse(null, e.message(), null))
+            }
+        }
     }
 
-    override suspend fun authenticate(token: String): AuthResult<User> {
+    override suspend fun authenticate(token: String): AuthResult<HttpResponse> {
         return try{
-            val result = authService.authenticate(token)
-            if(result.message != "Unauthenticated"){
-                AuthResult.Authorized(result)
-            }else{
-                AuthResult.Unauthorized(result)
+            val result = authService.authenticate("Bearer $token")
+            AuthResult.Authorized(result)
+        }catch (e: HttpException) {
+            if (e.code() == 401) {
+                AuthResult.Unauthorized(HttpResponse(message = e.message()))
+            } else {
+                AuthResult.UnknownError(HttpResponse(message = e.code().toString()))
             }
-        }catch(e: Exception){
-            AuthResult.UnknownError(User(message = "Unauthenticated"))
+        }
+    }
+
+    override suspend fun logout(token: String): AuthResult<HttpResponse> {
+        return try{
+            val result = authService.logout("Bearer $token")
+            prefs.clearAllTokens()
+            Log.v("LOGOUT",result.toString())
+            AuthResult.Authorized(result)
+        }catch (e: HttpException) {
+            if (e.code() == 401) {
+                AuthResult.Unauthorized(HttpResponse(message = e.message()))
+            } else {
+                AuthResult.UnknownError(HttpResponse(message = e.code().toString()))
+            }
         }
     }
 

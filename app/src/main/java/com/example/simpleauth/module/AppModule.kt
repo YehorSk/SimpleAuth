@@ -42,9 +42,9 @@ object AppModule {
         .build()
 
     val json = Json {
-        ignoreUnknownKeys = true // Ignore unknown keys
-        isLenient = true // Allow lenient parsing
-        encodeDefaults = true // Encode default values
+        ignoreUnknownKeys = true
+        isLenient = true
+        encodeDefaults = true
     }
 
     @Provides

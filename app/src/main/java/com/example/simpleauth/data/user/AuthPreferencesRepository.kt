@@ -4,6 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.simpleauth.model.HttpResponse
+import com.example.simpleauth.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -42,6 +44,12 @@ class AuthPreferencesRepository @Inject constructor(
         dataStore.edit { preferences ->
             preferences[JWT_TOKEN] = jwtToken
         }
+    }
+
+    suspend fun saveUser(httpResponse: HttpResponse){
+        saveUserName(httpResponse.data?.user?.name.toString())
+        saveUserEmail(httpResponse.data?.user?.email.toString())
+        saveJwtToken(httpResponse.data?.token.toString())
     }
 
     suspend fun clearAllTokens(){

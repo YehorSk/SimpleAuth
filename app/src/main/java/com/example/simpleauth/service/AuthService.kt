@@ -4,8 +4,8 @@ import com.example.simpleauth.auth.AuthResult
 import com.example.simpleauth.model.HttpResponse
 import com.example.simpleauth.model.Todo
 import com.example.simpleauth.model.User
-import com.example.simpleauth.ui.screens.login.LoginForm
-import com.example.simpleauth.ui.screens.register.RegisterForm
+import com.example.simpleauth.ui.screens.auth.LoginForm
+import com.example.simpleauth.ui.screens.auth.RegisterForm
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -28,11 +28,11 @@ interface AuthService {
     suspend fun login(@Body loginForm: LoginForm) : HttpResponse
 
     @POST("logout")
-    suspend fun logout(@Body loginForm: LoginForm) : HttpResponse
+    suspend fun logout(@Header("Authorization") token: String) : HttpResponse
 
     @GET("user")
     suspend fun authenticate(
         @Header("Authorization") token: String
-    ) : User
+    ) : HttpResponse
 
 }

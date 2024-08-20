@@ -13,8 +13,9 @@ data class HttpResponse(
 
 @Serializable
 data class Data(
-    val user: User?,
-    val token: String?
+    val user: User? = null,
+    val token: String? = null,
+    val message: String? = ""
 )
 
 @Serializable
