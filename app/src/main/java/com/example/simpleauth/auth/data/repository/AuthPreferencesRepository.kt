@@ -1,4 +1,4 @@
-package com.example.simpleauth.auth
+package com.example.simpleauth.auth.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

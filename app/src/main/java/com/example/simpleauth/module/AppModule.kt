@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.simpleauth.auth.AuthRepository
-import com.example.simpleauth.auth.AuthRepositoryImpl
-import com.example.simpleauth.auth.AuthPreferencesRepository
+import com.example.simpleauth.auth.data.repository.AuthRepository
+import com.example.simpleauth.auth.data.repository.AuthRepositoryImpl
+import com.example.simpleauth.auth.data.repository.AuthPreferencesRepository
 import com.example.simpleauth.service.AuthService
+import com.example.simpleauth.service.TodoService
+import com.example.simpleauth.todo.data.repository.TodoRepository
+import com.example.simpleauth.todo.data.repository.TodoRepositoryImpl
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -61,9 +64,17 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesTodoApiService(retrofit: Retrofit) : TodoService = retrofit.create(TodoService::class.java)
+
+    @Provides
+    @Singleton
     fun providesAuthPreferences(@ApplicationContext applicationContext: Context) : AuthPreferencesRepository = AuthPreferencesRepository(dataStore = applicationContext.dataStore)
 
     @Provides
     @Singleton
     fun provideAuthRepositoryImpl(authService: AuthService,authPreferencesRepository: AuthPreferencesRepository) : AuthRepository = AuthRepositoryImpl(authService,authPreferencesRepository)
+
+    @Provides
+    @Singleton
+    fun provideTodoRepositoryImpl(todoService: TodoService,authPreferencesRepository: AuthPreferencesRepository) : TodoRepository = TodoRepositoryImpl(todoService,authPreferencesRepository)
 }

@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Todo(
     val id: Int,
+    @SerialName("user_id")
+    val userId: Int,
     val name: String,
     val description: String,
     val priority: Int,

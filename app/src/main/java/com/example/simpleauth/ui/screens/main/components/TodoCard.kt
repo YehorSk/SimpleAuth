@@ -18,50 +18,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-//
-//@Composable
-//fun TodoCard(todo: Todo,modifier: Modifier = Modifier) {
-//    Card(
-//        modifier = modifier
-//            .padding(8.dp)
-//            .fillMaxWidth()
-//            .height(80.dp)
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//
-//        ) {
-//            Column(
-//                modifier = Modifier.weight(1f).padding(top = 10.dp, start = 10.dp, bottom = 10.dp),
-//            ) {
-//                Text(
-//                    text = todo.description
-//                )
-//            }
-//            Box(
-//                modifier = Modifier
-//                    .width(15.dp)
-//                    .fillMaxHeight()
-//                    .background(priorityColor(todo.priority))
-//            )
-//        }
-//
-//    }
-//}
-//
-//@Preview
-//@Composable
-//fun TodoCardPreview(){
-//
-//}
-//
-//fun priorityColor(priority: Int): Color{
-//    return when(priority){
-//        1 -> Color.Green
-//        2 -> Color.Yellow
-//        3 -> Color.Red
-//        else -> Color.Gray
-//    }
-//}
-//
+import com.example.simpleauth.todo.data.model.Todo
+
+@Composable
+fun TodoCard(todo: Todo, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .height(80.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+
+        ) {
+            Column(
+                modifier = Modifier.weight(1f).padding(top = 10.dp, start = 10.dp, bottom = 10.dp),
+            ) {
+                Text(
+                    text = todo.description
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .width(15.dp)
+                    .fillMaxHeight()
+                    .background(priorityColor(todo.priority))
+            )
+        }
+
+    }
+}
+
+@Preview
+@Composable
+fun TodoCardPreview(){
+
+}
+
+fun priorityColor(priority: Int): Color{
+    return when(priority){
+        1 -> Color.Green
+        2 -> Color.Yellow
+        3 -> Color.Red
+        else -> Color.Gray
+    }
+}
+

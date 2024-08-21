@@ -6,26 +6,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.simpleauth.auth.AuthRepository
+import com.example.simpleauth.auth.data.repository.AuthRepository
 import com.example.simpleauth.auth.data.model.AuthResult
 import com.example.simpleauth.auth.data.model.AuthState
-import com.example.simpleauth.auth.AuthPreferencesRepository
+import com.example.simpleauth.auth.data.repository.AuthPreferencesRepository
 import com.example.simpleauth.auth.data.model.HttpResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthScreenViewModel @Inject constructor(
-    val authRepository: AuthRepository,
-    private val prefs: AuthPreferencesRepository
+    val authRepository: AuthRepository
 ) : ViewModel() {
 
     val state by mutableStateOf(AuthState())
@@ -156,7 +153,6 @@ class AuthScreenViewModel @Inject constructor(
             state.isLoading = true
             val result = authRepository.authenticate()
             resultChannel.send(result)
-            Log.v("TOKEN", prefs.jwtTokenFlow.first().toString())
             when(result){
                 is AuthResult.Authorized -> {
                     Log.v("Authorized",result.data.toString())

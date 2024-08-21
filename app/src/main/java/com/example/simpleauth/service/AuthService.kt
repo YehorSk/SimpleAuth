@@ -12,9 +12,6 @@ import retrofit2.http.POST
 
 interface AuthService {
 
-    @GET("todo")
-    suspend fun getAllTodos(): List<Todo>
-
     @Headers(
         "Accept: application/vnd.api+json",
         "Content-Type: application/vnd.api+json"

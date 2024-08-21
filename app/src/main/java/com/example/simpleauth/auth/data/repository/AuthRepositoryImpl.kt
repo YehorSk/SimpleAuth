@@ -1,4 +1,4 @@
-package com.example.simpleauth.auth
+package com.example.simpleauth.auth.data.repository
 
 import android.util.Log
 import com.example.simpleauth.auth.data.model.AuthResult
