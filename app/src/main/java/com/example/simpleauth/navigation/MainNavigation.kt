@@ -9,11 +9,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.simpleauth.auth.AuthResult
+import com.example.simpleauth.auth.data.model.AuthResult
 import com.example.simpleauth.ui.screens.auth.AuthScreenViewModel
 import com.example.simpleauth.ui.screens.auth.LoginScreen
 import com.example.simpleauth.ui.screens.auth.RegisterScreen
@@ -54,7 +53,7 @@ fun MainNavigation(modifier: Modifier = Modifier){
             }
         }
     }
-    LaunchedEffect(authViewModel,context) {
+    LaunchedEffect(authViewModel.authResults,context) {
         authViewModel.authResults.collect{ result ->
             when(result){
                 is AuthResult.Authorized -> {

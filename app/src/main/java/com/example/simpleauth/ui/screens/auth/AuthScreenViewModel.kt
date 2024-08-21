@@ -7,15 +7,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.simpleauth.auth.AuthRepository
-import com.example.simpleauth.auth.AuthResult
-import com.example.simpleauth.auth.AuthState
-import com.example.simpleauth.data.user.AuthPreferencesRepository
-import com.example.simpleauth.model.HttpResponse
+import com.example.simpleauth.auth.data.model.AuthResult
+import com.example.simpleauth.auth.data.model.AuthState
+import com.example.simpleauth.auth.AuthPreferencesRepository
+import com.example.simpleauth.auth.data.model.HttpResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
@@ -38,9 +40,6 @@ class AuthScreenViewModel @Inject constructor(
         private set
 
     var logItemErrorUiState by mutableStateOf(LogErrorItemUiState())
-        private set
-
-    var token by mutableStateOf<String?>(null)
         private set
 
     private val resultChannel = Channel<AuthResult<HttpResponse>>()
@@ -155,27 +154,21 @@ class AuthScreenViewModel @Inject constructor(
     private fun authenticate(){
         viewModelScope.launch {
             state.isLoading = true
-            prefs.jwtTokenFlow.collectLatest { newToken ->
-                token = newToken
-                if (!token.isNullOrEmpty()) {
-                    val result = authRepository.authenticate(
-                        token.toString()
-                    )
-                    resultChannel.send(result)
-                    when(result){
-                        is AuthResult.Authorized -> {
-                            Log.v("Authorized",result.data.toString())
-                        }
-                        is AuthResult.Unauthorized -> {
-                            Log.v("Unauthorized", result.data.toString())
-                            prefs.clearAllTokens()
-                        }
-                        is AuthResult.UnknownError -> {
-                            Log.v("UnknownError", result.data.toString())
-                        }
-                    }
+            val result = authRepository.authenticate()
+            resultChannel.send(result)
+            Log.v("TOKEN", prefs.jwtTokenFlow.first().toString())
+            when(result){
+                is AuthResult.Authorized -> {
+                    Log.v("Authorized",result.data.toString())
+                }
+                is AuthResult.Unauthorized -> {
+                    Log.v("Unauthorized", result.data.toString())
+                }
+                is AuthResult.UnknownError -> {
+                    Log.v("UnknownError", result.data.toString())
                 }
             }
+
             state.isLoading = false
         }
     }
@@ -183,13 +176,8 @@ class AuthScreenViewModel @Inject constructor(
     fun logout(){
         viewModelScope.launch {
             state.isLoading = true
-            prefs.jwtTokenFlow.collectLatest { newToken ->
-                token = newToken
-                val result = authRepository.logout(
-                    token.toString()
-                )
-                resultChannel.send(result)
-            }
+            val result = authRepository.logout()
+            resultChannel.send(result)
             state.isLoading = false
         }
     }

@@ -1,9 +1,7 @@
 package com.example.simpleauth.service
 
-import com.example.simpleauth.auth.AuthResult
-import com.example.simpleauth.model.HttpResponse
-import com.example.simpleauth.model.Todo
-import com.example.simpleauth.model.User
+import com.example.simpleauth.auth.data.model.HttpResponse
+import com.example.simpleauth.todo.data.model.Todo
 import com.example.simpleauth.ui.screens.auth.LoginForm
 import com.example.simpleauth.ui.screens.auth.RegisterForm
 import retrofit2.http.Body
@@ -27,12 +25,10 @@ interface AuthService {
     @POST("login")
     suspend fun login(@Body loginForm: LoginForm) : HttpResponse
 
-    @POST("logout")
+    @GET("logout")
     suspend fun logout(@Header("Authorization") token: String) : HttpResponse
 
     @GET("user")
-    suspend fun authenticate(
-        @Header("Authorization") token: String
-    ) : HttpResponse
+    suspend fun authenticate(@Header("Authorization") token: String) : HttpResponse
 
 }

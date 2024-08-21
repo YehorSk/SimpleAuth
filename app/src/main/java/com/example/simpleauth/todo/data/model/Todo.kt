@@ -1,4 +1,4 @@
-package com.example.simpleauth.model
+package com.example.simpleauth.todo.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.simpleauth.auth.AuthRepository
 import com.example.simpleauth.auth.AuthRepositoryImpl
-import com.example.simpleauth.data.user.AuthPreferencesRepository
+import com.example.simpleauth.auth.AuthPreferencesRepository
 import com.example.simpleauth.service.AuthService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -62,7 +62,6 @@ object AppModule {
     @Provides
     @Singleton
     fun providesAuthPreferences(@ApplicationContext applicationContext: Context) : AuthPreferencesRepository = AuthPreferencesRepository(dataStore = applicationContext.dataStore)
-
 
     @Provides
     @Singleton

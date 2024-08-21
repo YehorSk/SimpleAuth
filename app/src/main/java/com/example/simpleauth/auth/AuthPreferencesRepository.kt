@@ -1,11 +1,10 @@
-package com.example.simpleauth.data.user
+package com.example.simpleauth.auth
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.simpleauth.model.HttpResponse
-import com.example.simpleauth.model.User
+import com.example.simpleauth.auth.data.model.HttpResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,13 +19,13 @@ class AuthPreferencesRepository @Inject constructor(
     }
 
     val userNameFlow: Flow<String?> = dataStore.data
-        .map { preferences -> preferences[USER_NAME] }
+        .map { preferences -> preferences[USER_NAME] ?: "" }
 
     val userEmailFlow: Flow<String?> = dataStore.data
-        .map { preferences -> preferences[USER_EMAIL] }
+        .map { preferences -> preferences[USER_EMAIL] ?: "" }
 
     val jwtTokenFlow: Flow<String?> = dataStore.data
-        .map { preferences -> preferences[JWT_TOKEN] }
+        .map { preferences -> preferences[JWT_TOKEN] ?: "" }
 
     suspend fun saveUserName(userName: String) {
         dataStore.edit { preferences ->
