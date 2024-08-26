@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.example.simpleauth.ui.theme.SimpleAuthTheme
 import com.example.simpleauth.navigation.MainNavigation
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +20,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             SimpleAuthTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MainNavigation()
+                    MainNavigation(
+                        navController = rememberNavController()
+                    )
                 }
             }
         }

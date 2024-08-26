@@ -1,6 +1,8 @@
 package com.example.simpleauth.ui.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -19,43 +22,59 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun RegisterScreen(
-    viewModel : AuthScreenViewModel,
+    viewModel: AuthScreenViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
     onLogClick: () -> Unit
-){
+) {
     val coroutineScope = rememberCoroutineScope()
 
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = modifier.fillMaxSize()
     ) {
-        RegBody(
-            itemUiState = viewModel.regItemUiState,
-            onItemValueChange = viewModel::updateRegUiState,
-            onRegClick = {
-                coroutineScope.launch {
-                    viewModel.register()
-                }
-            },
+        Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth(),
-            onLogClick = onLogClick,
-            itemErrorUiState = viewModel.regItemErrorUiState
-        )
+                .fillMaxSize()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            RegBody(
+                itemUiState = viewModel.regItemUiState,
+                onItemValueChange = viewModel::updateRegUiState,
+                onRegClick = {
+                    coroutineScope.launch {
+                        viewModel.register()
+                    }
+                },
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth(),
+                onLogClick = onLogClick,
+                itemErrorUiState = viewModel.regItemErrorUiState
+            )
+        }
+//        if (viewModel.state.isLoading) {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                CircularProgressIndicator()
+//            }
+//        }
     }
 }
+
 
 @Composable
 fun RegBody(

@@ -1,6 +1,8 @@
 package com.example.simpleauth.ui.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,30 +27,47 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
-    viewModel : AuthScreenViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
-){
+    viewModel: AuthScreenViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = modifier.fillMaxSize()
     ) {
-        LogBody(
-            itemUiState = viewModel.logItemUiState,
-            onItemValueChange = viewModel::updateLogUiState,
-            onRegClick = {
-                coroutineScope.launch {
-                    viewModel.login()
-                }
-            },
+        Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-        )
+                .fillMaxSize()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            LogBody(
+                itemUiState = viewModel.logItemUiState,
+                onItemValueChange = viewModel::updateLogUiState,
+                onRegClick = {
+                    coroutineScope.launch {
+                        viewModel.login()
+                        onLoginClick()
+                    }
+                },
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+            )
+        }
+
+//        if (viewModel.state.isLoading) {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                CircularProgressIndicator()
+//            }
+//        }
     }
 }
 

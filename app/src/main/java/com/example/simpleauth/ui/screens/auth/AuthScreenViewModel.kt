@@ -11,6 +11,7 @@ import com.example.simpleauth.auth.data.model.AuthResult
 import com.example.simpleauth.auth.data.model.AuthState
 import com.example.simpleauth.auth.data.repository.AuthPreferencesRepository
 import com.example.simpleauth.auth.data.model.HttpResponse
+import com.example.simpleauth.utils.cleanError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.first
@@ -94,10 +95,8 @@ class AuthScreenViewModel @Inject constructor(
                     Log.v("Unauthorized", result.data.toString())
                     updateLogErrorUiState(
                         LoginFormErrors(
-                            email = result.data?.errors?.email.toString().replace("[", "")
-                                .replace("]", ""),
-                            password = result.data?.errors?.password.toString().replace("[", "")
-                                .replace("]", "")
+                            email = cleanError(result.data?.errors?.email.toString()),
+                            password = cleanError(result.data?.errors?.password.toString())
                         )
                     )
                 }
@@ -129,14 +128,10 @@ class AuthScreenViewModel @Inject constructor(
                     Log.v("Unauthorized", result.data.toString())
                     updateRegErrorUiState(
                         RegisterFormErrors(
-                            name = result.data?.errors?.name.toString().replace("[", "")
-                                .replace("]", ""),
-                            email = result.data?.errors?.email.toString().replace("[", "")
-                                .replace("]", ""),
-                            password = result.data?.errors?.password.toString().replace("[", "")
-                                .replace("]", ""),
-                            passwordConfirm = result.data?.errors?.passwordConfirmation.toString()
-                                .replace("[", "").replace("]", "")
+                            name = cleanError(result.data?.errors?.name.toString()),
+                            email = cleanError(result.data?.errors?.email.toString()),
+                            password = cleanError(result.data?.errors?.password.toString()),
+                            passwordConfirm = cleanError(result.data?.errors?.passwordConfirmation.toString())
                         )
                     )
                 }
@@ -153,18 +148,6 @@ class AuthScreenViewModel @Inject constructor(
             state.isLoading = true
             val result = authRepository.authenticate()
             resultChannel.send(result)
-            when(result){
-                is AuthResult.Authorized -> {
-                    Log.v("Authorized",result.data.toString())
-                }
-                is AuthResult.Unauthorized -> {
-                    Log.v("Unauthorized", result.data.toString())
-                }
-                is AuthResult.UnknownError -> {
-                    Log.v("UnknownError", result.data.toString())
-                }
-            }
-
             state.isLoading = false
         }
     }

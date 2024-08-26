@@ -6,6 +6,7 @@ import com.example.simpleauth.auth.data.model.HttpResponse
 import com.example.simpleauth.service.AuthService
 import com.example.simpleauth.ui.screens.auth.LoginForm
 import com.example.simpleauth.ui.screens.auth.RegisterForm
+import com.example.simpleauth.utils.parseHttpResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
@@ -32,28 +33,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun parseHttpResponse(responseBody: String): HttpResponse {
-        return try {
-            if (responseBody.isBlank()) {
-                Log.e("PARSE_ERROR", "Response body is blank or empty")
-                HttpResponse(status = 422, message = "Empty response", data = null, errors = null)
-            } else {
-                val json = Json { ignoreUnknownKeys = true }
-                json.decodeFromString<HttpResponse>(responseBody)
-            }
-        } catch (e: Exception) {
-            Log.e("PARSE_ERROR", "Error parsing HttpResponse", e)
-            HttpResponse(status = 422, message = "Invalid response format", data = null, errors = null)
-        }
-    }
-
     override suspend fun login(loginForm: LoginForm): AuthResult<HttpResponse> {
         return try{
             val result = authService.login(loginForm)
             prefs.saveUser(result)
             AuthResult.Authorized(result)
         }catch (e: HttpException) {
-            if (e.code() == 422) {
+            if (e.code() == 401) {
                 val responseBody = e.response()?.errorBody()?.string() ?: ""
                 val httpResponse = parseHttpResponse(responseBody)
                 AuthResult.Unauthorized(httpResponse)
