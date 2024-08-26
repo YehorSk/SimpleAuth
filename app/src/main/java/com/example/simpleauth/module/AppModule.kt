@@ -11,6 +11,7 @@ import com.example.simpleauth.service.AuthService
 import com.example.simpleauth.service.TodoService
 import com.example.simpleauth.todo.data.repository.TodoRepository
 import com.example.simpleauth.todo.data.repository.TodoRepositoryImpl
+import com.example.simpleauth.utils.ConnectivityRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -72,9 +73,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepositoryImpl(authService: AuthService,authPreferencesRepository: AuthPreferencesRepository) : AuthRepository = AuthRepositoryImpl(authService,authPreferencesRepository)
+    fun connectivityRepository(@ApplicationContext applicationContext: Context) : ConnectivityRepository = ConnectivityRepository(context = applicationContext)
 
     @Provides
     @Singleton
-    fun provideTodoRepositoryImpl(todoService: TodoService,authPreferencesRepository: AuthPreferencesRepository) : TodoRepository = TodoRepositoryImpl(todoService,authPreferencesRepository)
+    fun provideAuthRepositoryImpl(authService: AuthService,authPreferencesRepository: AuthPreferencesRepository,connectivityRepository: ConnectivityRepository) : AuthRepository = AuthRepositoryImpl(authService,authPreferencesRepository,connectivityRepository)
+
+    @Provides
+    @Singleton
+    fun provideTodoRepositoryImpl(todoService: TodoService,authPreferencesRepository: AuthPreferencesRepository,connectivityRepository: ConnectivityRepository) : TodoRepository = TodoRepositoryImpl(todoService,authPreferencesRepository,connectivityRepository)
 }

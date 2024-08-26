@@ -4,12 +4,9 @@ package com.example.simpleauth.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.simpleauth.ui.screens.auth.AuthScreenViewModel
-import com.example.simpleauth.ui.screens.main.MainScreenViewModel
 import com.example.simpleauth.ui.screens.main.settings.SettingsScreen
 import com.example.simpleauth.ui.screens.main.todo.TodoScreen
 
@@ -33,7 +30,6 @@ fun HomeNavGraph(
             SettingsScreen(modifier = modifier.fillMaxSize(), onLogOutClicked = onLogOutClicked )
         }
     }
-
 }
 
 

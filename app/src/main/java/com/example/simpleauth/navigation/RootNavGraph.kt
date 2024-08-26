@@ -71,7 +71,7 @@ fun MainNavigation(
                     }
                 }
                 is AuthResult.UnknownError -> {
-                    Toast.makeText(context, "UnknownError", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, result.data?.message.toString(), Toast.LENGTH_LONG).show()
                     navController.navigate(AuthScreen.SignUp.route) {
                         popUpTo(AuthScreen.SignUp.route) {
                             inclusive = true

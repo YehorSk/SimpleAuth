@@ -11,6 +11,7 @@ import com.example.simpleauth.auth.data.model.AuthResult
 import com.example.simpleauth.auth.data.model.AuthState
 import com.example.simpleauth.auth.data.repository.AuthPreferencesRepository
 import com.example.simpleauth.auth.data.model.HttpResponse
+import com.example.simpleauth.utils.ConnectivityRepository
 import com.example.simpleauth.utils.cleanError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

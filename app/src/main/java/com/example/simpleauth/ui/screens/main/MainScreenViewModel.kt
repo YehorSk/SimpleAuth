@@ -38,7 +38,7 @@ class MainScreenViewModel @Inject constructor(
         getTodos()
     }
 
-    private fun getTodos() {
+    fun getTodos() {
         viewModelScope.launch {
             delay(3000L)
             mainUiState = try{
