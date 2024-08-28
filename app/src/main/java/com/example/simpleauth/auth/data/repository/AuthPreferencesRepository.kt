@@ -16,6 +16,7 @@ class AuthPreferencesRepository @Inject constructor(
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val USER_EMAIL = stringPreferencesKey("USER_EMAIL")
         val JWT_TOKEN = stringPreferencesKey("JWT_TOKEN")
+        val USER_ROLE = stringPreferencesKey("USER_ROLE")
     }
 
     val userNameFlow: Flow<String?> = dataStore.data
@@ -23,6 +24,9 @@ class AuthPreferencesRepository @Inject constructor(
 
     val userEmailFlow: Flow<String?> = dataStore.data
         .map { preferences -> preferences[USER_EMAIL] ?: "" }
+
+    val userRoleFlow: Flow<String?> = dataStore.data
+        .map { preferences -> preferences[USER_ROLE] ?: "" }
 
     val jwtTokenFlow: Flow<String?> = dataStore.data
         .map { preferences -> preferences[JWT_TOKEN] ?: "" }
@@ -39,6 +43,12 @@ class AuthPreferencesRepository @Inject constructor(
         }
     }
 
+    suspend fun saveUserRole(userRole: String) {
+        dataStore.edit { preferences ->
+            preferences[USER_ROLE] = userRole
+        }
+    }
+
     suspend fun saveJwtToken(jwtToken: String) {
         dataStore.edit { preferences ->
             preferences[JWT_TOKEN] = jwtToken
@@ -48,6 +58,7 @@ class AuthPreferencesRepository @Inject constructor(
     suspend fun saveUser(httpResponse: HttpResponse){
         saveUserName(httpResponse.data?.user?.name.toString())
         saveUserEmail(httpResponse.data?.user?.email.toString())
+        saveUserRole(httpResponse.data?.user?.role.toString())
         saveJwtToken(httpResponse.data?.token.toString())
     }
 
@@ -55,6 +66,7 @@ class AuthPreferencesRepository @Inject constructor(
         dataStore.edit { preferences ->
             preferences.remove(USER_NAME)
             preferences.remove(USER_EMAIL)
+            preferences.remove(USER_ROLE)
             preferences.remove(JWT_TOKEN)
         }
     }

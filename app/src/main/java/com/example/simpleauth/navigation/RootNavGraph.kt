@@ -49,7 +49,7 @@ fun MainNavigation(
 
     }
 
-    LaunchedEffect(authViewModel.authResults, context) {
+    LaunchedEffect(authViewModel.authResults) {
         authViewModel.authResults.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
@@ -62,8 +62,6 @@ fun MainNavigation(
                 }
                 is AuthResult.Unauthorized -> {
                     Toast.makeText(context, "Unauthorized", Toast.LENGTH_LONG).show()
-                    val currentRoute = navController.currentDestination?.route
-                    Log.v("ROUTE",currentRoute.toString())
                     navController.navigate(AuthScreen.SignUp.route) {
                         popUpTo(AuthScreen.SignUp.route) {
                             inclusive = true

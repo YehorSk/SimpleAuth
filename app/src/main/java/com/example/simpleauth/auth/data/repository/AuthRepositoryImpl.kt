@@ -1,8 +1,5 @@
 package com.example.simpleauth.auth.data.repository
 
-import android.util.Log
-import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.asLiveData
 import com.example.simpleauth.auth.data.model.AuthResult
 import com.example.simpleauth.auth.data.model.HttpResponse
 import com.example.simpleauth.service.AuthService
@@ -11,7 +8,6 @@ import com.example.simpleauth.ui.screens.auth.RegisterForm
 import com.example.simpleauth.utils.ConnectivityRepository
 import com.example.simpleauth.utils.parseHttpResponse
 import kotlinx.coroutines.flow.first
-import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 

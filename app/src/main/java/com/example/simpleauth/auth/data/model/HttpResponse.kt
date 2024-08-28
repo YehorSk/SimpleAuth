@@ -29,7 +29,8 @@ data class User(
     @SerialName("created_at")
     val createdAt: String? = "",
     val id: Int? = 0,
-    val message: String? = ""
+    val message: String? = "",
+    val role: String? = ""
 )
 
 @Serializable

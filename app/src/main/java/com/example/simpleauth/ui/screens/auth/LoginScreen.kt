@@ -1,5 +1,6 @@
 package com.example.simpleauth.ui.screens.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,22 +18,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.simpleauth.auth.data.model.AuthResult
 
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun LoginScreen(
-    viewModel: AuthScreenViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
-    onLoginClick: () -> Unit
+    authViewModel: AuthScreenViewModel = hiltViewModel(),
+    onSuccess: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -44,12 +48,11 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
             LogBody(
-                itemUiState = viewModel.logItemUiState,
-                onItemValueChange = viewModel::updateLogUiState,
-                onRegClick = {
+                itemUiState = authViewModel.logItemUiState,
+                onItemValueChange = authViewModel::updateLogUiState,
+                onLogClick = {
                     coroutineScope.launch {
-                        viewModel.login()
-                        onLoginClick()
+                        authViewModel.login()
                     }
                 },
                 modifier = Modifier
@@ -58,67 +61,69 @@ fun LoginScreen(
             )
         }
 
-//        if (viewModel.state.isLoading) {
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
-//                contentAlignment = Alignment.Center
-//            ) {
-//                CircularProgressIndicator()
-//            }
-//        }
-    }
-}
-
-@Composable
-fun LogBody(
-    itemUiState: LogItemUiState,
-    onItemValueChange: (LoginForm) -> Unit,
-    onRegClick: () -> Unit,
-    modifier: Modifier = Modifier
-){
-    Column(
-        modifier = modifier
-    ) {
-        LogForm(
-            loginForm = itemUiState.itemDetails,
-            onValueChange = onItemValueChange,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = onRegClick,
-            enabled = itemUiState.isEntryValid,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "LogIn")
+        LaunchedEffect(authViewModel.authResults) {
+            authViewModel.authResults.collect { result ->
+                if(result is AuthResult.Authorized){
+                    onSuccess()
+                }
+            }
         }
     }
 }
 
-@Composable
-fun LogForm(loginForm: LoginForm, enabled: Boolean = true, onValueChange: (LoginForm) -> Unit = {}, modifier: Modifier = Modifier){
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    @Composable
+    fun LogBody(
+        itemUiState: LogItemUiState,
+        onItemValueChange: (LoginForm) -> Unit,
+        onLogClick: () -> Unit,
+        modifier: Modifier = Modifier
     ) {
-
-        OutlinedTextField(
-            value = loginForm.email,
-            onValueChange = { onValueChange(loginForm.copy(email = it)) },
-            label = { Text(text = "User Email")},
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = loginForm.password,
-            onValueChange = { onValueChange(loginForm.copy(password = it)) },
-            label = { Text(text = "User Password")},
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
+        Column(
+            modifier = modifier
+        ) {
+            LogForm(
+                loginForm = itemUiState.itemDetails,
+                onValueChange = onItemValueChange,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                onClick = onLogClick,
+                enabled = itemUiState.isEntryValid,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "LogIn")
+            }
+        }
     }
-}
+
+    @Composable
+    fun LogForm(
+        loginForm: LoginForm,
+        enabled: Boolean = true,
+        onValueChange: (LoginForm) -> Unit = {},
+        modifier: Modifier = Modifier
+    ) {
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+
+            OutlinedTextField(
+                value = loginForm.email,
+                onValueChange = { onValueChange(loginForm.copy(email = it)) },
+                label = { Text(text = "User Email") },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = enabled,
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = loginForm.password,
+                onValueChange = { onValueChange(loginForm.copy(password = it)) },
+                label = { Text(text = "User Password") },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = enabled,
+                singleLine = true
+            )
+        }
+    }

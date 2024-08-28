@@ -1,6 +1,5 @@
 package com.example.simpleauth.ui.screens.auth
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,26 +13,28 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.simpleauth.auth.data.model.AuthResult
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun RegisterScreen(
-    viewModel: AuthScreenViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
-    onLogClick: () -> Unit
+    authViewModel: AuthScreenViewModel = hiltViewModel(),
+    onLogClick: () -> Unit,
+    onSuccess: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -48,19 +49,26 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center
         ) {
             RegBody(
-                itemUiState = viewModel.regItemUiState,
-                onItemValueChange = viewModel::updateRegUiState,
+                itemUiState = authViewModel.regItemUiState,
+                onItemValueChange = authViewModel::updateRegUiState,
                 onRegClick = {
                     coroutineScope.launch {
-                        viewModel.register()
+                        authViewModel.register()
                     }
                 },
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
                 onLogClick = onLogClick,
-                itemErrorUiState = viewModel.regItemErrorUiState
+                itemErrorUiState = authViewModel.regItemErrorUiState
             )
+        }
+        LaunchedEffect(authViewModel.authResults) {
+            authViewModel.authResults.collect { result ->
+                if(result is AuthResult.Authorized){
+                    onSuccess()
+                }
+            }
         }
 //        if (viewModel.state.isLoading) {
 //            Box(
