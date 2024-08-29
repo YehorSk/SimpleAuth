@@ -19,7 +19,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun register(registerForm: RegisterForm): AuthResult<HttpResponse> {
         val isOnline = connectivityRepository.isInternetConnected()
-        val result = if(isOnline){
+        return if(isOnline){
             try{
                 val result = authService.register(registerForm)
                 login(LoginForm(email = registerForm.email, password = registerForm.password))
@@ -36,12 +36,11 @@ class AuthRepositoryImpl @Inject constructor(
         }else{
             AuthResult.UnknownError(HttpResponse(null, "No internet connection!", null))
         }
-        return result
     }
 
     override suspend fun login(loginForm: LoginForm): AuthResult<HttpResponse> {
         val isOnline = connectivityRepository.isInternetConnected()
-        val result = if(isOnline){
+        return if(isOnline){
             try{
                 val result = authService.login(loginForm)
                 prefs.saveUser(result)
@@ -58,12 +57,11 @@ class AuthRepositoryImpl @Inject constructor(
         }else{
             AuthResult.UnknownError(HttpResponse(null, "No internet connection!", null))
         }
-        return result
     }
 
     override suspend fun authenticate(): AuthResult<HttpResponse> {
         val isOnline = connectivityRepository.isInternetConnected()
-        val result = if(isOnline){
+        return if(isOnline){
             try{
                 val token = prefs.jwtTokenFlow.first()
                 if (token!!.isBlank()) {
@@ -82,12 +80,11 @@ class AuthRepositoryImpl @Inject constructor(
         }else{
             AuthResult.UnknownError(HttpResponse(null, "No internet connection!", null))
         }
-        return result
     }
 
     override suspend fun logout(): AuthResult<HttpResponse> {
         val isOnline = connectivityRepository.isInternetConnected()
-        val result = if(isOnline){
+        return if(isOnline){
             try{
                 val token = prefs.jwtTokenFlow.first()
                 val result = authService.logout("Bearer $token")
@@ -103,7 +100,6 @@ class AuthRepositoryImpl @Inject constructor(
         }else{
             AuthResult.UnknownError(HttpResponse(null, "No internet connection!", null))
         }
-        return result
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.simpleauth.ui.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 
@@ -37,6 +43,7 @@ fun RegisterScreen(
     onSuccess: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val uiState by authViewModel.uiState.collectAsState()
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -70,19 +77,18 @@ fun RegisterScreen(
                 }
             }
         }
-//        if (viewModel.state.isLoading) {
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
-//                contentAlignment = Alignment.Center
-//            ) {
-//                CircularProgressIndicator()
-//            }
-//        }
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
     }
 }
-
 
 @Composable
 fun RegBody(

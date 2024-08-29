@@ -19,10 +19,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.simpleauth.auth.data.model.AuthResult
@@ -37,6 +38,7 @@ fun LoginScreen(
     onSuccess: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val uiState by authViewModel.uiState.collectAsState()
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -66,6 +68,16 @@ fun LoginScreen(
                 if(result is AuthResult.Authorized){
                     onSuccess()
                 }
+            }
+        }
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
     }
@@ -99,10 +111,10 @@ fun LoginScreen(
 
     @Composable
     fun LogForm(
+        modifier: Modifier = Modifier,
         loginForm: LoginForm,
         enabled: Boolean = true,
-        onValueChange: (LoginForm) -> Unit = {},
-        modifier: Modifier = Modifier
+        onValueChange: (LoginForm) -> Unit = {}
     ) {
         Column(
             modifier = modifier,

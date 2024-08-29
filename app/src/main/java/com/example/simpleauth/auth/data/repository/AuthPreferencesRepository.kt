@@ -20,16 +20,16 @@ class AuthPreferencesRepository @Inject constructor(
     }
 
     val userNameFlow: Flow<String?> = dataStore.data
-        .map { preferences -> preferences[USER_NAME] ?: "" }
+        .map { preferences -> preferences[USER_NAME]}
 
     val userEmailFlow: Flow<String?> = dataStore.data
-        .map { preferences -> preferences[USER_EMAIL] ?: "" }
+        .map { preferences -> preferences[USER_EMAIL] }
 
     val userRoleFlow: Flow<String?> = dataStore.data
-        .map { preferences -> preferences[USER_ROLE] ?: "" }
+        .map { preferences -> preferences[USER_ROLE] }
 
     val jwtTokenFlow: Flow<String?> = dataStore.data
-        .map { preferences -> preferences[JWT_TOKEN] ?: "" }
+        .map { preferences -> preferences[JWT_TOKEN] }
 
     suspend fun saveUserName(userName: String) {
         dataStore.edit { preferences ->
@@ -56,10 +56,10 @@ class AuthPreferencesRepository @Inject constructor(
     }
 
     suspend fun saveUser(httpResponse: HttpResponse){
-        saveUserName(httpResponse.data?.user?.name.toString())
-        saveUserEmail(httpResponse.data?.user?.email.toString())
-        saveUserRole(httpResponse.data?.user?.role.toString())
-        saveJwtToken(httpResponse.data?.token.toString())
+        saveUserName(httpResponse.data?.user?.name ?: "")
+        saveUserEmail(httpResponse.data?.user?.email ?: "")
+        saveUserRole(httpResponse.data?.user?.role ?: "")
+        saveJwtToken(httpResponse.data?.token ?: "")
     }
 
     suspend fun clearAllTokens(){

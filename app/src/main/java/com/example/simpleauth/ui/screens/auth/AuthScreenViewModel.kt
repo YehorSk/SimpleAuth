@@ -15,8 +15,12 @@ import com.example.simpleauth.utils.ConnectivityRepository
 import com.example.simpleauth.utils.cleanError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -27,7 +31,8 @@ class AuthScreenViewModel @Inject constructor(
     val authRepository: AuthRepository
 ) : ViewModel() {
 
-    val state by mutableStateOf(AuthState())
+    private val _uiState = MutableStateFlow(AuthState())
+    val uiState: StateFlow<AuthState> = _uiState.asStateFlow()
 
     var regItemUiState by mutableStateOf(RegItemUiState())
         private set
@@ -78,10 +83,18 @@ class AuthScreenViewModel @Inject constructor(
 
     fun login(){
         viewModelScope.launch {
-            state.isLoading = true
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = true
+                )
+            }
             val result = authRepository.login(loginForm = logItemUiState.itemDetails)
             resultChannel.send(result)
-            state.isLoading = false
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = false
+                )
+            }
             when(result){
                 is AuthResult.Authorized -> {
                     Log.v("Authorized", result.data.toString())
@@ -110,7 +123,11 @@ class AuthScreenViewModel @Inject constructor(
 
     fun register(){
         viewModelScope.launch {
-            state.isLoading = true
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = true
+                )
+            }
             val result = authRepository.register(registerForm = regItemUiState.itemDetails)
             resultChannel.send(result)
             when(result){
@@ -140,25 +157,45 @@ class AuthScreenViewModel @Inject constructor(
                     Log.v("UnknownError", result.data.toString())
                 }
             }
-            state.isLoading = false
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 
     private fun authenticate(){
         viewModelScope.launch {
-            state.isLoading = true
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = true
+                )
+            }
             val result = authRepository.authenticate()
             resultChannel.send(result)
-            state.isLoading = false
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 
     fun logout(){
         viewModelScope.launch {
-            state.isLoading = true
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = true
+                )
+            }
             val result = authRepository.logout()
             resultChannel.send(result)
-            state.isLoading = false
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 
