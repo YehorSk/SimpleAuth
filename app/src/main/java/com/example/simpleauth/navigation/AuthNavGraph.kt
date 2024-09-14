@@ -13,7 +13,7 @@ fun NavGraphBuilder.authNavGraph(
 ){
     navigation(
         route = Graph.AUTHENTICATION,
-        startDestination = AuthScreen.SignUp.route
+        startDestination = AuthScreen.Login.route
     ){
 
         composable(AuthScreen.SignUp.route){
@@ -37,7 +37,8 @@ fun NavGraphBuilder.authNavGraph(
                             inclusive = true
                         }
                     }
-                }
+                },
+                onRegClick = { navController.navigate(AuthScreen.SignUp.route) }
             )
         }
     }

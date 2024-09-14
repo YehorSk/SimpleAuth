@@ -27,7 +27,10 @@ fun HomeNavGraph(
             )
         }
         composable(HomeScreen.Settings.route) {
-            SettingsScreen(modifier = modifier.fillMaxSize(), onLogOutClicked = onLogOutClicked )
+            SettingsScreen(
+                modifier = modifier.fillMaxSize(),
+                onLogOutClicked = onLogOutClicked
+            )
         }
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.simpleauth.auth.data.model.AuthResult
 
 import kotlinx.coroutines.launch
@@ -35,10 +36,11 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     modifier: Modifier = Modifier,
     authViewModel: AuthScreenViewModel = hiltViewModel(),
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
+    onRegClick: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val uiState by authViewModel.uiState.collectAsState()
+    val uiState by authViewModel.uiState.collectAsStateWithLifecycle()
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -59,7 +61,8 @@ fun LoginScreen(
                 },
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                onRegClick = onRegClick
             )
         }
 
@@ -88,6 +91,7 @@ fun LoginScreen(
         itemUiState: LogItemUiState,
         onItemValueChange: (LoginForm) -> Unit,
         onLogClick: () -> Unit,
+        onRegClick: () -> Unit,
         modifier: Modifier = Modifier
     ) {
         Column(
@@ -105,6 +109,12 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "LogIn")
+            }
+            Button(
+                onClick = onRegClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "SignUp")
             }
         }
     }

@@ -64,7 +64,7 @@ class AuthRepositoryImpl @Inject constructor(
         return if(isOnline){
             try{
                 val token = prefs.jwtTokenFlow.first()
-                if (token!!.isBlank()) {
+                if (token.isNullOrBlank()) {
                     return AuthResult.Unauthorized(HttpResponse(message = "Unauthenticated"))
                 }
                 val result = authService.authenticate("Bearer $token")

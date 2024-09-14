@@ -62,7 +62,7 @@ fun MainNavigation(
                 }
                 is AuthResult.Unauthorized -> {
                     Toast.makeText(context, "Unauthorized", Toast.LENGTH_LONG).show()
-                    navController.navigate(AuthScreen.SignUp.route) {
+                    navController.navigate(AuthScreen.Login.route) {
                         popUpTo(AuthScreen.SignUp.route) {
                             inclusive = true
                         }
@@ -70,7 +70,7 @@ fun MainNavigation(
                 }
                 is AuthResult.UnknownError -> {
                     Toast.makeText(context, result.data?.message.toString(), Toast.LENGTH_LONG).show()
-                    navController.navigate(AuthScreen.SignUp.route) {
+                    navController.navigate(AuthScreen.Login.route) {
                         popUpTo(AuthScreen.SignUp.route) {
                             inclusive = true
                         }
